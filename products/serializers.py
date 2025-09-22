@@ -5,7 +5,7 @@ from .models import Product
 class ProductSerializer(ModelSerializer):
     class Meta:
         model = Product
-        exclude = ["user","id"]
+        exclude = ["owner","id"]
 
     def create(self, validated_data):
-        return Product.objects.create(**validated_data, user=self.context["request"].user)
+        return Product.objects.create(**validated_data, owner=self.context["request"].user)

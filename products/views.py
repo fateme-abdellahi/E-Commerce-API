@@ -9,7 +9,6 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 
 class ProductAPIView(APIView):
-
     """
     This view is used to view, update, and delete a product using the product id.
     """
@@ -22,8 +21,6 @@ class ProductAPIView(APIView):
         products = Product.objects.filter(id=pk)
         if not products.exists():
             return Response({"error":"product not found"},status=404)
-        
-        self.check_object_permissions(request, products[0])
         serializer = self.serializer_class(products[0])
 
         return Response(serializer.data,status=200)
@@ -74,4 +71,4 @@ class SearchProductAPIView(generics.ListAPIView):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['name', 'description', 'price', 'user__username','stock']
+    filterset_fields = ['name', 'description', 'price', 'owner__username','stock']
