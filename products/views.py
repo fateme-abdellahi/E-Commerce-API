@@ -20,39 +20,39 @@ class ProductAPIView(APIView):
     def get(self, request, pk, *args, **kwargs):
         products = Product.objects.filter(id=pk)
         if not products.exists():
-            return Response({"error":"product not found"},status=404)
+            return Response({"error": "product not found"}, status=404)
         serializer = self.serializer_class(products[0])
 
-        return Response(serializer.data,status=200)
-    
+        return Response(serializer.data, status=200)
+
     # Update a product using it's id
     def put(self, request, pk, *args, **kwargs):
         products = Product.objects.filter(id=pk)
         if not products.exists():
-            return Response({"error":"products not found"},status=404)
-        
+            return Response({"error": "products not found"}, status=404)
+
         product = products[0]
         self.check_object_permissions(request, product)
 
         serializer = self.serializer_class(product, data=request.data, partial=True)
         if not serializer.is_valid():
-            return Response(serializer.errors,status=400)
+            return Response(serializer.errors, status=400)
         serializer.save()
 
-        return Response(serializer.data,status=200)
-    
+        return Response(serializer.data, status=200)
+
     # Delete a product using it's id
     def delete(self, request, pk, *args, **kwargs):
         products = Product.objects.filter(id=pk)
         if not products.exists():
-            return Response({"error":"product not found"},status=404)
-        
+            return Response({"error": "product not found"}, status=404)
+
         product = products[0]
         self.check_object_permissions(request, product)
         product.delete()
 
         return Response(status=204)
-    
+
 
 class ProductCreateAPIView(generics.CreateAPIView):
     """
@@ -68,7 +68,8 @@ class SearchProductAPIView(generics.ListAPIView):
     This view is used to search for products using query parameters
     such as name, description, price, and the username of the user who created the product
     """
+
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['name', 'description', 'price', 'owner__username','stock']
+    filterset_fields = ["name", "description", "price", "owner__username", "stock"]
