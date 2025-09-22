@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Product
 from .serializers import ProductSerializer
-from .permissions import IsOwner
+from .permissions import IsAdminOrReadonly
 from django_filters.rest_framework import DjangoFilterBackend
 
 
@@ -14,7 +14,7 @@ class ProductAPIView(APIView):
     """
 
     serializer_class = ProductSerializer
-    permission_classes = [IsOwner]
+    permission_classes = [IsAdminOrReadonly]
 
     # View a product using it's id
     def get(self, request, pk, *args, **kwargs):
@@ -60,7 +60,7 @@ class ProductCreateAPIView(generics.CreateAPIView):
     """
 
     serializer_class = ProductSerializer
-    permission_classes = [IsOwner]
+    permission_classes = [IsAdminOrReadonly]
 
 
 class SearchProductAPIView(generics.ListAPIView):
@@ -72,4 +72,4 @@ class SearchProductAPIView(generics.ListAPIView):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["name", "description", "price", "owner__username", "stock"]
+    filterset_fields = ["name", "description", "price", "stock"]
