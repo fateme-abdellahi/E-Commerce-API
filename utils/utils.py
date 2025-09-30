@@ -8,5 +8,3 @@ def get_token(user):
         'refresh': str(refresh)
     }
 
-
-
