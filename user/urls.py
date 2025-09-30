@@ -7,7 +7,9 @@ from rest_framework_simplejwt.views import (TokenObtainPairView,TokenRefreshView
 urlpatterns = [
     path('api/accounts/register', views.RegisterAPIView.as_view(), name='register'),
     path('api/accounts/login', views.LoginAPIView.as_view(), name='login'),
+    path('api/accounts/logout', views.LogoutAPIView.as_view(), name='logout'),
     path('api/profile/<user_id>', ProfileApiView.as_view(), name='profile'),
+
 
     # JWT
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),

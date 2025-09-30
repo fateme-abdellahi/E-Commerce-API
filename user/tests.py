@@ -41,3 +41,37 @@ class ViewProfileAPITest(APITestCase):
         response = self.client.get(self.verify_url,HTTP_AUTHORIZATION=f'Bearer {new_access}')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+
+class LogoutAPITest(APITestCase):
+    def setUp(self):
+        # common setup
+        self.user = User.objects.create_user(username="user", email="user@gmail.com", password="7")
+        self.logout_url = reverse('logout')
+
+        # obtain tokens
+        token_response = self.client.post(
+            reverse('token_obtain_pair'),
+            {"username": "user", "password": "7"},
+            format="json"
+        )
+        self.access_token = token_response.data['access']
+        self.refresh_token = token_response.data['refresh']
+
+    def test_logout_success(self):
+        response = self.client.post(
+            self.logout_url,
+            {"refresh": self.refresh_token},
+            HTTP_AUTHORIZATION=f"Bearer {self.access_token}",
+            format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.data['result'])
+
+        # try using refresh-token after logout → should fail
+        refresh_response = self.client.post(
+            reverse('token_refresh'),
+            {"refresh": self.refresh_token},
+            format="json"
+        )
+        self.assertEqual(refresh_response.status_code, status.HTTP_401_UNAUTHORIZED)
+
