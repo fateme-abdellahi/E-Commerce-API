@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Product
 from .serializers import ProductSerializer
-from .permissions import IsAdminOrReadonly,IsAdminUser
+from .permissions import IsAdminOrReadonly, IsAdminUser
 from .filters import ProductFilter
 
 
@@ -19,17 +19,14 @@ class ProductAPIView(APIView):
     def get(self, request, pk, *args, **kwargs):
         products = Product.objects.filter(id=pk)
         if not products.exists():
-            response_data={
+            response_data = {
                 "result": False,
                 "message": "product not found",
             }
             return Response(data=response_data, status=404)
         serializer = self.serializer_class(products[0])
 
-        response_data={
-            "result": True,
-            "data": serializer.data
-        }
+        response_data = {"result": True, "data": serializer.data}
 
         return Response(data=response_data, status=200)
 
@@ -37,7 +34,7 @@ class ProductAPIView(APIView):
     def put(self, request, pk, *args, **kwargs):
         products = Product.objects.filter(id=pk)
         if not products.exists():
-            response_data={
+            response_data = {
                 "result": False,
                 "message": "product not found",
             }
@@ -48,24 +45,21 @@ class ProductAPIView(APIView):
 
         serializer = self.serializer_class(product, data=request.data, partial=True)
         if not serializer.is_valid():
-            response_data={
+            response_data = {
                 "result": False,
                 "message": serializer.errors,
             }
             return Response(data=response_data, status=400)
         serializer.save()
 
-        response_data={
-            "result": True,
-            "message": "product updated successfully"
-        }
+        response_data = {"result": True, "message": "product updated successfully"}
         return Response(data=response_data, status=204)
 
     # Delete a product using it's id
     def delete(self, request, pk, *args, **kwargs):
         products = Product.objects.filter(id=pk)
         if not products.exists():
-            response_data={
+            response_data = {
                 "result": False,
                 "message": "product not found",
             }
@@ -75,12 +69,12 @@ class ProductAPIView(APIView):
         self.check_object_permissions(request, product)
         product.delete()
 
-        response_data={
+        response_data = {
             "result": True,
             "message": "product deleted successfully",
         }
 
-        return Response(data=response_data,status=204)
+        return Response(data=response_data, status=204)
 
 
 class ProductCreateAPIView(APIView):
@@ -92,22 +86,21 @@ class ProductCreateAPIView(APIView):
     permission_classes = [IsAdminUser]
 
     def post(self, request, *args, **kwargs):
-        serilializer=self.serializer_class(data=request.data)
+        serilializer = self.serializer_class(data=request.data)
         if serilializer.is_valid():
             serilializer.save()
-            response_data={
+            response_data = {
                 "result": True,
                 "message": "product created successfully",
-                "data": serilializer.data
+                "data": serilializer.data,
             }
-            return Response(data=response_data,status=201)
-        
-        response_data={
+            return Response(data=response_data, status=201)
+
+        response_data = {
             "result": False,
             "message": serilializer.errors,
         }
-        return Response(data=response_data,status=400)
-        
+        return Response(data=response_data, status=400)
 
 
 class SearchProductAPIView(APIView):
@@ -123,7 +116,7 @@ class SearchProductAPIView(APIView):
 
         product_filter = ProductFilter(request.GET, queryset=queryset)
         if not product_filter.is_valid():
-            response_data={
+            response_data = {
                 "result": False,
                 "message": product_filter.errors,
             }
@@ -131,18 +124,16 @@ class SearchProductAPIView(APIView):
 
         serializer = ProductSerializer(product_filter.qs, many=True)
 
-        if serializer.data==[]:
-            response_data={
+        if serializer.data == []:
+            response_data = {
                 "result": False,
                 "message": "no products found with the given query",
             }
             return Response(data=response_data, status=404)
-        
-        response_data={
+
+        response_data = {
             "result": True,
             "message": "products retrieved successfully",
-            "data": serializer.data
+            "data": serializer.data,
         }
         return Response(data=response_data, status=200)
-
-

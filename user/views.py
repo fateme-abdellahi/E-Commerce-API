@@ -22,20 +22,26 @@ class RegisterAPIView(APIView):
             user = register_serializer.instance
             token = get_token(user)
 
-            return Response({
-                'result': True,
-                'message':'new user created!',
-                'data': {
-                    'username': user.username,
-                    **token,
+            return Response(
+                {
+                    "result": True,
+                    "message": "new user created!",
+                    "data": {
+                        "username": user.username,
+                        **token,
+                    },
                 },
-            }, status=status.HTTP_201_CREATED)
+                status=status.HTTP_201_CREATED,
+            )
         else:
-            return Response({
-                'result': False,
-                'message': 'user not created!',
-                'data': register_serializer.errors
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {
+                    "result": False,
+                    "message": "user not created!",
+                    "data": register_serializer.errors,
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
 class LoginAPIView(APIView):
@@ -46,23 +52,29 @@ class LoginAPIView(APIView):
         if login_serializer.is_valid():
 
             # login
-            user = login_serializer.validated_data['user']
+            user = login_serializer.validated_data["user"]
             token = get_token(user)
 
-            return Response({
-                'result': True,
-                'message': 'login successful!',
-                'data': {
-                    'username': user.username,
-                    **token,
-                }
-            }, status=status.HTTP_200_OK)
+            return Response(
+                {
+                    "result": True,
+                    "message": "login successful!",
+                    "data": {
+                        "username": user.username,
+                        **token,
+                    },
+                },
+                status=status.HTTP_200_OK,
+            )
         else:
-            return Response({
-                'result': False,
-                'message': 'Invalid username or password!',
-                'data': login_serializer.errors
-            }, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(
+                {
+                    "result": False,
+                    "message": "Invalid username or password!",
+                    "data": login_serializer.errors,
+                },
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
 
 
 class ProfileApiView(APIView):
@@ -74,12 +86,15 @@ class ProfileApiView(APIView):
         # check object permission (error 403)
         self.check_object_permissions(request, user)
 
-        profile_serializer = ProfileSerializer(user, context={'request': request}).data
-        return Response({
-            'result': True,
-            'message': 'User profile found!',
-            'data': profile_serializer
-        }, status=status.HTTP_200_OK)
+        profile_serializer = ProfileSerializer(user, context={"request": request}).data
+        return Response(
+            {
+                "result": True,
+                "message": "User profile found!",
+                "data": profile_serializer,
+            },
+            status=status.HTTP_200_OK,
+        )
 
 
 # logout view

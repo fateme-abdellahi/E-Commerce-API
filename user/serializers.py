@@ -4,25 +4,25 @@ from user.models import User
 from rest_framework import serializers
 
 
-
 class RegisterSerializer(serializers.Serializer):
-    username = serializers.CharField(required=True,
-                                     validators=[UniqueValidator(queryset=User.objects.all())])
-    email = serializers.EmailField(required=True,
-                                   validators=[UniqueValidator(queryset=User.objects.all())])
+    username = serializers.CharField(
+        required=True, validators=[UniqueValidator(queryset=User.objects.all())]
+    )
+    email = serializers.EmailField(
+        required=True, validators=[UniqueValidator(queryset=User.objects.all())]
+    )
     password = serializers.CharField(required=True, write_only=True)
     confirm_password = serializers.CharField(required=True, write_only=True)
 
     def validate(self, data):
-        if data['password'] != data['confirm_password']:
+        if data["password"] != data["confirm_password"]:
             raise serializers.ValidationError("Passwords don't match")
         return data
 
     def create(self, validated_data):
-        validated_data.pop('confirm_password', None)
+        validated_data.pop("confirm_password", None)
         new_user = User.objects.create_user(**validated_data)
         return new_user
-
 
 
 class LoginSerializer(serializers.Serializer):
@@ -40,4 +40,4 @@ class LoginSerializer(serializers.Serializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('username', 'email')
+        fields = ("username", "email")
