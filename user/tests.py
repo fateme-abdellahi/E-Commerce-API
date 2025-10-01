@@ -74,4 +74,3 @@ class LogoutAPITest(APITestCase):
             format="json"
         )
         self.assertEqual(refresh_response.status_code, status.HTTP_401_UNAUTHORIZED)
-
